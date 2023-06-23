@@ -13,6 +13,7 @@ st.title(':blue[Bundle] Orders Fee Change :memo:')
 
 bearer_token = str(st.text_input("Insert Bearer Token"))
 
+st.cache()
 headers = {
     "authority": "api.getnabis.com",
     "accept": "*/*",
@@ -29,7 +30,7 @@ headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36",
 }
 
-
+st.cache()
 def all_admin_orders_accounting_page(order_number):
     json_data = {
         "operationName": "AllAdminOrdersAccountingPage",
@@ -65,7 +66,7 @@ def all_admin_orders_accounting_page(order_number):
     )
     return response.json()
 
-
+st.cache()
 def pricing_change(qb_invoice_data,pricing_amt):
     json_data = {
         'operationName': 'UpdateOrder',
@@ -82,6 +83,7 @@ def pricing_change(qb_invoice_data,pricing_amt):
     response = requests.post('https://api.getnabis.com/graphql/admin', headers=headers, json=json_data)
     return response.json()
 
+st.cache()
 def regenerate_inv_B(qb_invoice_data):
     json_data = {
     'operationName': 'GenerateQuickbooksInvoice',
@@ -102,6 +104,7 @@ def regenerate_inv_B(qb_invoice_data):
     response = requests.post('https://api.getnabis.com/graphql/admin', headers=headers, json=json_data)
     return response.json()
 
+st.cache()
 def generate_qb_single_invoice(qb_invoice_data):
 
     json_data = {
@@ -125,6 +128,7 @@ def generate_qb_single_invoice(qb_invoice_data):
     )
     return response.json()
 
+st.cache()
 def percentage_fee_change(qb_invoice_data,pct_fee):
     json_data = {
         'operationName': 'UpdateOrder',
@@ -142,7 +146,7 @@ def percentage_fee_change(qb_invoice_data,pct_fee):
     return response.json()
 
 
-
+st.cache()
 def main(list_orders):
     
     for order in list_orders:
@@ -166,7 +170,7 @@ def main(list_orders):
             percentage_fee_change(qb_invoice_data,pct_fee)
         st.code(f'{order} Processed')
     
-        
+st.cache()       
 def main_regenerate(list_orders):
     
     for order in list_orders:
@@ -188,7 +192,8 @@ def main_regenerate(list_orders):
             generate_qb_single_invoice(qb_invoice_data)
 
         st.code(f'{order}' + ' Regenerated')
-        
+
+st.cache()
 def load_excel(file_path):
     book = load_workbook(file_path, data_only=True)
     writer = pd.ExcelWriter("temp.xlsx", engine="openpyxl")
@@ -219,12 +224,14 @@ if list_orders is not None:
                     st.caption('Click Button below to process')
                     submit_to_update = st.button('Update Flat Fee')
                     if submit_to_update:
+                        st.cache_data()
                         main(df["Invoice"])
 
             elif selection == 'Regenerate Invoices':            
                     st.caption('Click Button below to process')
                     submit_to_regenerate_single = st.button('Regenerate Invoice')
                     if submit_to_regenerate_single:
+                        st.cache_data()
                         main_regenerate(df["Invoice"])
 
 
